@@ -3,8 +3,8 @@ clear all;
 close all;
 
 
-shape_x = [-5 -6 8 17 10 -5];
-shape_y = [-5 7 8 12 3 -5];
+shape_x = [-8.5 -6 8 17 10 15 -10 -8.5];
+shape_y = [-5 7 8 12 3 -5 -7 -5];
 
 
 r_x = 0;
@@ -13,13 +13,16 @@ r_y = 0;
 robot = [r_x r_y];
 
 obs_r = 1.25;
-phi = 0:pi/30:2*pi;
+phi = 0:pi/12:2*pi;
 
-obs_x = 4+obs_r*cos(phi);
-obs_y = 4+obs_r*sin(phi);
+obs_x = 7*rand(1,1)+obs_r*cos(phi);
+obs_y = 7*rand(1,1)+obs_r*sin(phi);
 
-%obs_x = awgn(obs_x(1:3:end),.0000001);
-%obs_y = awgn(obs_y(1:3:end),.0000001);
+% obs_x = [2 4 10 12];
+% obs_y = [2 3 4 0];
+
+%obs_x = awgn(obs_x,.0000001);
+%obs_y = awgn(obs_y,.0000001);
 
 t_x = 1:length(shape_x);
 t_y = 1:length(shape_y);
@@ -57,8 +60,8 @@ end
 
 ind = find(max(th_obs)>th_wall & min(th_obs)<th_wall);
 
-ind2 = find(max(th_obs));
-ind3 = find(min(th_obs));
+ind2 = find(max(th_obs)==th_obs);
+ind3 = find(min(th_obs)==th_obs);
 
 ind4 = find(d_obs(ind2)<d_obs & d_obs(ind3)<d_obs); 
 
@@ -68,12 +71,33 @@ ys(ind) = [];
 obs_x(ind4) = [];
 obs_y(ind4) = [];
 
-hold on;
-axis('square')
+room_vec_x = horzcat(xs,obs_x);
+room_vec_y = horzcat(ys,obs_y);
+
+room_vec_d = sqrt(room_vec_x.^2+room_vec_y.^2);
+
+
+ave_room_d = mean(room_vec_d);
+obj_index = [];
+old_diff = 0;
+
+for r = 1:length(room_vec_d)-1
+    diff = abs(room_vec_d(r) - room_vec_d(r+1));
+    if abs(diff - old_diff) < 0.0002
+        obj_index(r) = r;
+    end
+    old_diff = diff;
+end
+
+obj_index = find(obj_index~=0);
+
+hold on; grid on;
+axis('equal')
 line([0 15*cos(min(th_obs))],[0 15*sin(min(th_obs))])
 line([0 10*cos(max(th_obs))],[0 10*sin(max(th_obs))])
 scatter(shape_x,shape_y)
-scatter(xs,ys,'r')
+scatter(xs(1:10:end),ys(1:10:end),'r')
 plot(shape_x,shape_y,'g')
 scatter(r_x,r_y,'m','filled')
 scatter(obs_x,obs_y)
+scatter(xs(obj_index),ys(obj_index),100,'filled')
