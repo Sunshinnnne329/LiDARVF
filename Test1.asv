@@ -71,15 +71,8 @@ obs_y(ind4) = [];
 
 room_vec_x = horzcat(xs,obs_x);
 room_vec_y = horzcat(ys,obs_y);
-room_vec_th_rad = atan2(room_vec_y,room_vec_x);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%% THIS IS THE REPLICATED LIDAR DATA %%%%%%%%%%%%%%%%%
 room_vec_d = sqrt(room_vec_x.^2+room_vec_y.^2);
-room_vec_th_deg = rad2deg(room_vec_th_rad);
-%%%%%%%%%%%%%%%%% THIS IS THE REPLICATED LIDAR DATA %%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 hold on; grid on;
 axis('equal')
