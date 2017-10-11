@@ -21,8 +21,8 @@ obs_y = 7*rand(1,1)+obs_r*sin(phi);
 % obs_x = [2 4 10 12];
 % obs_y = [2 3 4 0];
 
-%obs_x = awgn(obs_x,.0000001);
-%obs_y = awgn(obs_y,.0000001);
+obs_x = awgn(obs_x,.0000001);
+obs_y = awgn(obs_y,.0000001);
 
 t_x = 1:length(shape_x);
 t_y = 1:length(shape_y);
@@ -83,8 +83,8 @@ room_vec_th_deg = rad2deg(room_vec_th_rad);
 
 hold on; grid on;
 axis('equal')
-line([0 15*cos(min(th_obs))],[0 15*sin(min(th_obs))])
-line([0 10*cos(max(th_obs))],[0 10*sin(max(th_obs))])
+% line([0 15*cos(min(th_obs))],[0 15*sin(min(th_obs))])
+% line([0 10*cos(max(th_obs))],[0 10*sin(max(th_obs))])
 scatter(shape_x,shape_y)
 scatter(xs(1:10:end),ys(1:10:end),'r')
 plot(shape_x,shape_y,'g')
