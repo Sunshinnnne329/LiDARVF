@@ -1,4 +1,4 @@
-function [bool,x_circ,y_circ,R] = checkCircFit(indexed_x,indexed_y)
+function [bool,x_circ,y_circ,R,xc,yc] = checkCircFit(indexed_x,indexed_y)
 
 [xc,yc,R] = circfit(indexed_x,indexed_y);
 theta = linspace(0,atan2(indexed_y(end)-indexed_y(1),indexed_x(end)-indexed_x(1)),length(indexed_x));

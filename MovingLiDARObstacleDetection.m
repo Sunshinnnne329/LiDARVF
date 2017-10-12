@@ -5,10 +5,6 @@ close all;
 shape_x = 3.*[-15 -15 15 15 -15];
 shape_y = 3.*[-15 15 15 -15 -15];
 
-r_x = 0:1:15;
-% r_y = zeros(1,length(r_x));
-r_y = 0:1:15;
-
 xs = [];
 ys = [];
 
@@ -23,18 +19,18 @@ end
 xs_orig = awgn(xs,3);
 ys_orig = awgn(ys,3);
 
-% obs_x = rand(1,1).*[2 4 4 2];
-% obs_y = rand(1,1).*[2 4 2 4];
-
-% obs_x = 4+obs_r*cos(phi);
-% obs_y = 4+obs_r*sin(phi);
-
-% obs_x = awgn(obs_x,10);
-% obs_y = awgn(obs_y,10);
 obs_r = 1.25;
 phi = 0:pi/12:2*pi;
 obs_x_orig = 20*rand(1,1)+obs_r*cos(phi);
 obs_y_orig = 20*rand(1,1)+obs_r*sin(phi);
+
+r_rad = 15;
+r_alp = 0:pi/12:2*pi;
+r_x = r_rad.*cos(r_alp);
+r_y = r_rad.*sin(r_alp);
+
+% r_x = (0:1:15);
+% r_y = (0:1:15);
 
 figure;
 
@@ -45,6 +41,10 @@ for p = 1:length(r_x)
     
     obs_x = obs_x_orig;
     obs_y = obs_y_orig;
+    
+%     obs_x = awgn(obs_x,10);
+%     obs_y = awgn(obs_y,10);
+
     
     d_wall = [];
     th_wall = [];
@@ -115,37 +115,39 @@ for p = 1:length(r_x)
     x_indexed = room_vec_d(idx_store).*cosd(room_vec_th_deg(idx_store));
     y_indexed = room_vec_d(idx_store).*sind(room_vec_th_deg(idx_store));
     
-    [bool,x_circ,y_circ,R] = checkCircFit(x_indexed,y_indexed);
+    [bool,x_circ,y_circ,R,xc,yc] = checkCircFit(x_indexed,y_indexed);
     
     if bool ~= 1
         disp("NO CIRCLE FIT FOUND. DISPLAYING DATA.");
     end
     
-    x_ave = x_ave/length(idx_store);
-    y_ave = y_ave/length(idx_store);
+    x_ave = xc;
+    y_ave = yc;
     
     
     hold on; grid on;
     axis('equal')
     
-    line([r_x(p) r_x(p)+15*cos(min(th_obs))],[r_y(p) r_y(p)+15*sin(min(th_obs))])
-    line([r_x(p) r_x(p)+10*cos(max(th_obs))],[r_y(p) r_y(p)+10*sin(max(th_obs))])
+    l1 = line([r_x(p) r_x(p)+50*cos(min(th_obs))],[r_y(p) r_y(p)+50*sin(min(th_obs))]);
+    l2 = line([r_x(p) r_x(p)+50*cos(max(th_obs))],[r_y(p) r_y(p)+50*sin(max(th_obs))]);
     line(obs_x_store,obs_y_store)
     scatter(shape_x,shape_y)
     a = scatter(room_vec_x,room_vec_y,[],dist_array(:,2));
     colorbar
     plot(shape_x,shape_y,'g')
-    scatter(r_x(p),r_y(p),'sq','k','filled')
-    scatter(room_vec_x(idx_store),room_vec_y(idx_store),'m','filled')
+    scatter(r_x(p),r_y(p),'p','k','filled')
+    cent = scatter(room_vec_x(idx_store),room_vec_y(idx_store),'m','filled');
     scatter(x_ave,y_ave,50,'g','filled')
     plot(x_circ,y_circ)
-    % scatter(room_vec_x(idx_store2),room_vec_y(idx_store2),'g','filled')
     
     disp("Location of Object Centroid, x = "+x_ave+", y = "+y_ave);
     
     drawnow();
     
     if p ~= length(r_x)
+        delete(l1);
+        delete(l2);
         delete(a);
+        delete(cent);
     end
 end
