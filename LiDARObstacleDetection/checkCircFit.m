@@ -10,7 +10,7 @@ y_check = find(indexed_y == y_circ);
 
 a = sqrt((indexed_x(1)-indexed_x(2))^2+(indexed_y(1)-indexed_y(2))^2);
 
-r= a*(1/sin(pi/length(indexed_x)))
+r= a*(1/sin(pi/length(indexed_x)));
 
 if abs(r - R) < 1
     bool = 1;
